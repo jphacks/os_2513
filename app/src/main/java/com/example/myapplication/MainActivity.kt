@@ -20,6 +20,7 @@ import android.Manifest
 //import com.example.jphacktest1017.R
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
 import android.speech.RecognitionListener
@@ -57,54 +58,27 @@ class MainActivity : AppCompatActivity() {
         }
 
         val inputText = findViewById<EditText>(R.id.inputText)
-        val actionButton = findViewById<Button>(R.id.actionButton)
         val responseText = findViewById<TextView>(R.id.responseText)
+        val actionButton = findViewById<Button>(R.id.actionButton)
+        var resetButton = findViewById<Button>(R.id.actionButton_reset)
 
         actionButton.setOnClickListener {
-            val apiKey = BuildConfig.api_key
-
-            // --- DEBUG: Check if the API key is being loaded ---
-            if (apiKey.isBlank() || !apiKey.startsWith("AIza")) { // A basic check for an empty or invalid-looking key
-                responseText.text = "Error: API Key is NOT loaded correctly from local.properties. Please check the file."
-                return@setOnClickListener // Stop further execution
-            } else {
-                // If you want to verify the key is loaded, you can temporarily show a confirmation.
-                // For security reasons, NEVER display the full key.
-                Log.d("ApiKeyCheck", "Key loaded successfully. Starts with: ${apiKey.take(4)}, Ends with: ${apiKey.takeLast(4)}")
-            }
-            // --- End of DEBUG ---
-
-            input_text = inputText.text.toString()
-            if (input_text.isBlank()) {
-                responseText.text = "Please enter text."
-                return@setOnClickListener
-            }
-
-            val generativeModel = GenerativeModel(
-                modelName = "gemini-2.0-flash",
-                apiKey = apiKey
-            )
-
-            responseText.text = "Generating..." // Provide feedback to the user
-            val prompt = "以下の文章はスマホを見ている人が聞き逃した会話の一部です。文章全体を日本語で簡潔に要約してください。また、要約文に対応すべき依頼や他者から行動をとがめられていると判断できる文章がが含まれている場合は、[要対応][警告]などと太字で示し、行動を促す簡潔な文章を、優先度と共に示し、優先度が高い順に並べてください。\n例) [要対応] ポストに入っている新聞の回収\n優先度：★★\n[警告] 今すぐスマホを片付け、夕飯の準備を手伝うこと\n優先度：★★\n$input_text"
-
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    val response = generativeModel.generateContent(prompt)
-                    withContext(Dispatchers.Main) {
-                        responseText.text = response.text
-                    }
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        responseText.text = "Error: ${e.message}"
-                        Log.e("GeminiApp", "API Error", e)
-                    }
-                }
-            }
+            onSubmit()
         }
+
+        resetButton.setOnClickListener {
+            // リストの中身を空
+            conversationHistory.clear()
+
+            // 検出ステータス＆input文字列をリセット
+            textViewResult!!.setText("「え？なんつった？」\nを認識待機中...")
+            responseText!!.setText("")
+            inputText.setText("")
+        }
+
         // 音声テキスト変換関連ここから
         textViewResult = findViewById<TextView?>(R.id.textViewResult)
-        textViewResult!!.setText("「え？なんつった？」を待機中...")
+        textViewResult!!.setText("「え？なんつった？」\nを認識待機中...")
 
         textViewAll = findViewById<TextView?>(R.id.textViewAll)
         textViewLog = findViewById<TextView?>(R.id.textViewLog)
@@ -126,6 +100,52 @@ class MainActivity : AppCompatActivity() {
         // 音声テキスト変換関連ここまで
     }
 
+    // AI実行(submit押下時＆え？なんつった？検出時）
+    private fun onSubmit() {
+        val inputText = findViewById<EditText>(R.id.inputText)
+        val responseText = findViewById<TextView>(R.id.responseText)
+
+        val apiKey = BuildConfig.api_key
+
+        // --- DEBUG: Check if the API key is being loaded ---
+        if (apiKey.isBlank() || !apiKey.startsWith("AIza")) { // A basic check for an empty or invalid-looking key
+            responseText.text = "Error: API Key is NOT loaded correctly from local.properties. Please check the file."
+//            return@setOnClickListener // Stop further execution
+        } else {
+            // If you want to verify the key is loaded, you can temporarily show a confirmation.
+            // For security reasons, NEVER display the full key.
+            Log.d("ApiKeyCheck", "Key loaded successfully. Starts with: ${apiKey.take(4)}, Ends with: ${apiKey.takeLast(4)}")
+        }
+        // --- End of DEBUG ---
+
+        input_text = inputText.text.toString()
+        if (input_text.isBlank()) {
+            responseText.text = "Please enter text."
+//            return@setOnClickListener
+        }
+
+        val generativeModel = GenerativeModel(
+            modelName = "gemini-2.0-flash",
+            apiKey = apiKey
+        )
+
+        responseText.text = "Generating..." // Provide feedback to the user
+        val prompt = "以下の文章はスマホを見ている人が聞き逃した会話の一部です。文章全体を日本語で簡潔に要約してください。また、要約文に対応すべき依頼や他者から行動をとがめられていると判断できる文章がが含まれている場合は、[要対応][警告]などと太字で示し、行動を促す簡潔な文章を、優先度と共に示し、優先度が高い順に並べてください。\n例) [要対応] ポストに入っている新聞の回収\n優先度：★★\n[警告] 今すぐスマホを片付け、夕飯の準備を手伝うこと\n優先度：★★\n$input_text"
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val response = generativeModel.generateContent(prompt)
+                withContext(Dispatchers.Main) {
+                    responseText.text = response.text
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    responseText.text = "Error: ${e.message}"
+                    Log.e("GeminiApp", "API Error", e)
+                }
+            }
+        }
+    }
 
     // 権限リクエストの結果
     override fun onRequestPermissionsResult(
@@ -309,17 +329,18 @@ class MainActivity : AppCompatActivity() {
 
         val target = "えなんつった" // 比較対象も正規化
 
-        getstr = text
-        textViewAll!!.setText(getstr)
-
         if (normalizedText.contains(target)) {
             Log.d(TAG, "★★ キーワード検出！ ★★: " + text)
 
 
             // 検出が重複しないように、一度UIを更新
             if (!textViewResult!!.getText().toString().startsWith("検出！")) {
+
+                // ボタン押下せずにAI生成実行
+//                onSubmit()
+
                 runOnUiThread(Runnable {
-                    textViewResult!!.setText("検出！: " + text)
+                    textViewResult!!.setText("「え？なんつった？」\nを検出しました！")
                 })
 
 
@@ -330,6 +351,10 @@ class MainActivity : AppCompatActivity() {
                 speechRecognizer!!.stopListening() // 一旦停止
                 Handler().postDelayed(Runnable { this.startListening() }, 1000) // 1秒後に再開
             }
+        }else{
+            // キーワード未検出時のみ会話履歴保存
+            getstr = text
+            textViewAll!!.setText(getstr)
         }
     }
 
