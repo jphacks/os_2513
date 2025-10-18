@@ -12,6 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Enter text here"
+        android:textSize="12sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app.layout_constraintEnd_toEndOf="parent"
@@ -52,19 +53,21 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.593" />
-
+        app:layout_constraintVertical_bias="0.892" />
+    <!-- 以下非表示ブロック -->
     <TextView
         android:id="@+id/textViewLog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Log!"
         android:textSize="8sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.931"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.338" />
+        app:layout_constraintVertical_bias="0.961" />
 
     <TextView
         android:id="@+id/textViewAll"
@@ -72,11 +75,12 @@
         android:layout_height="wrap_content"
         android:text="All Sentences."
         android:textSize="24sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.819" />
+        app:layout_constraintVertical_bias="0.815" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

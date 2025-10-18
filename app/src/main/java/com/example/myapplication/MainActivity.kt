@@ -39,11 +39,13 @@ class MainActivity : AppCompatActivity() {
     private var isListening = false
 
     private var getstr: String = ""
+    private var input_text: String =""
 
     // 過去5件の会話履歴を保持するリスト
     private val conversationHistory: MutableList<String> = mutableListOf()
     // 保持する最大件数
-    private val MAX_HISTORY_SIZE = 10
+    private val MAX_HISTORY_SIZE = 5
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +87,7 @@ class MainActivity : AppCompatActivity() {
             )
 
             responseText.text = "Generating..." // Provide feedback to the user
-            val prompt = "以下の文章はスマホを見ている人が聞き逃した会話の一部です。文章全体を日本語で簡潔に要約してください。また、要約文に対応すべき依頼や他者から行動をとがめられていると判断できる文章がが含まれている場合は、[要対応][警告]などと太字で示し、行動を促す簡潔な文章を、優先度と共に示し、優先度が高い順に並べてください。\n例) [要対応] ポストに入っている新聞の回収\n優先度：★★\n[警告] 今すぐスマホを片付け、夕飯の準備を手伝うこと\n優先度：★★\n$input_text"
+            val prompt = "以下の会話文はこのAIシステムが動作しているスマホを持っている人（以下、対象者とする）の周囲の会話、または町中のアナウンスなどを録音したものです。対象者はスマホを操作しており、録音にある会話の内容を十分に把握できなかったため、会話内容を把握したいと考えています。対象者の助けとなるよう、以下2点を実行してください\n1点目：会話内容に、対象者への依頼や対象者がその行為を他者から行動をとがめられていると判断できる文章がが含まれている場合、[要対応][警告]などと太字で示し、行動を促す簡潔な文章や警告を示す文章を優先度と共に示し、優先度が高い順に並べてください。\n例) [要対応] ポストに入っている新聞の回収\n優先度：★★\n[要対応] 祭りのゴミの量削減に向けての意見を述べる\n優先度：★★★\n[警告] 生返事をくり返していることに相手が怒りを感じています。\\n優先度：★★★★\n2点目：対象者に向け、会話内容全体を200文字以内で簡潔に要約してください要約文の中では、対象者のことは「あなた」と表記してください。\n例1）昨日飲んだ珈琲が美味しかったことについての雑談のあと、今日の宿題の内容について尋ねられています。また、相手はあなたがスマホを見ながらしゃべっていることについて、不快感を持っているようです。加えて、今すぐ洗濯物を取り込むよう依頼されています。\n例2)新しい家具の購入についての意見が述べられています。一人は椅子を購入すべきと主張し、もう一人は机の買い換えが急務であると主張しています。あなたの意見を述べるよう求められています。\n1点目、2点目に共通し、次の点に留意してください。話している人が一人であると考えられる場合、その人は対象者ではなく、対象者に話しかけている可能性が高いと考えられます。会話内容から、対象者が実行する必要があると考えられる項目を抽出して提示してください。会話の内容が雑談に終始し、特に要対応事項がない場合は[対応事項無し]と返答してください。話している人が複数人いる場合、一方が対象者であると考えられるばあいと、会議中の録音など、対象者以外に複数の人間が会話に参加している場合の両方が考えられます。この場合、活発に会話に参加している人間は対象者ではない可能性が高く、終始無言であったり、相づちに終始している人間がいれば対象者である可能性があると考えられます。一方が対象者である場合は会話している人間が一人である場合と同様、対象者が実行すべき事項の有無を判断し、実行すべき内容がある場合はそれを提示してください。対象者以外に複数の人間がいる場合は、その場にいる全員ヘの問いかけなど、対象者が把握しておくべき内容を中心に対応事項を抽出し、会話全体の流れが分かるよう要約してください。\n$input_text"
 
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
@@ -256,6 +258,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onResults(results: Bundle) {
+            val inputText = findViewById<EditText>(R.id.inputText)
             Log.d(TAG, "onResults (最終結果)")
             val data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (data != null && !data.isEmpty()) {
@@ -270,8 +273,9 @@ class MainActivity : AppCompatActivity() {
                 //    改行コード("\n")で連結して、1個の文字列に変換する
                 val historyText = conversationHistory.joinToString("\n")
                 // 2. 変換した文字列を TextView にセットする
-                // ※textViewLog も onCreate で findViewById するのを忘れんといてや！
+                // 仮として、textViewLogとinputTextの両方に表示
                 textViewLog!!.setText(historyText)
+                inputText.setText(historyText)
 
                 checkForKeyword(fullText)
             }
