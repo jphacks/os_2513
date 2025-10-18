@@ -340,7 +340,7 @@ class MainActivity : AppCompatActivity() {
             if (!textViewResult!!.getText().toString().startsWith("検出！")) {
 
                 // ボタン押下せずにAI生成実行
-                onSubmit()
+//                onSubmit()
 
                 runOnUiThread(Runnable {
                     textViewResult!!.setText("「え？なんつった？」\nを検出しました！")
