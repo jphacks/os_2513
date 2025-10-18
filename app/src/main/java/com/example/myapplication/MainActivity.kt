@@ -329,6 +329,9 @@ class MainActivity : AppCompatActivity() {
 
         val target = "えなんつった" // 比較対象も正規化
 
+        getstr = text
+        textViewAll!!.setText(getstr)
+
         if (normalizedText.contains(target)) {
             Log.d(TAG, "★★ キーワード検出！ ★★: " + text)
 
@@ -337,7 +340,7 @@ class MainActivity : AppCompatActivity() {
             if (!textViewResult!!.getText().toString().startsWith("検出！")) {
 
                 // ボタン押下せずにAI生成実行
-//                onSubmit()
+                onSubmit()
 
                 runOnUiThread(Runnable {
                     textViewResult!!.setText("「え？なんつった？」\nを検出しました！")
@@ -351,10 +354,6 @@ class MainActivity : AppCompatActivity() {
                 speechRecognizer!!.stopListening() // 一旦停止
                 Handler().postDelayed(Runnable { this.startListening() }, 1000) // 1秒後に再開
             }
-        }else{
-            // キーワード未検出時のみ会話履歴保存
-            getstr = text
-            textViewAll!!.setText(getstr)
         }
     }
 
