@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -29,6 +30,8 @@ class SpeechRecognitionService : Service() {
     companion object {
         private const val TAG = "SpeechRecognitionSvc"
         private const val CHANNEL_ID = "SpeechRecognitionServiceChannel"
+        private const val KEYWORD_CHANNEL_ID = "KeywordNotificationChannel"
+        private const val KEYWORD_NOTIFICATION_ID = 2
         const val ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE"
         const val ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE"
         const val BROADCAST_ACTION_RESULT = "com.example.myapplication.RESULT"
@@ -37,6 +40,7 @@ class SpeechRecognitionService : Service() {
         const val EXTRA_KEYWORD_TEXT = "EXTRA_KEYWORD_TEXT"
         const val EXTRA_HISTORY_TEXT = "EXTRA_HISTORY_TEXT"
         const val ACTION_SUMMARIZE = "com.example.myapplication.SUMMARIZE"
+        const val EXTRA_FROM_NOTIFICATION = "EXTRA_FROM_NOTIFICATION"
         var isRunning = false
         var latestHistory: String? = null
     }
@@ -96,12 +100,14 @@ class SpeechRecognitionService : Service() {
 
         val notificationTapIntent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra(EXTRA_FROM_NOTIFICATION, "Recording Notification Tap")
         }
         val notificationTapPendingIntent = PendingIntent.getActivity(this, 0, notificationTapIntent, pendingIntentFlags)
 
         val summarizeIntent = Intent(this, MainActivity::class.java).apply {
             action = ACTION_SUMMARIZE
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra(EXTRA_FROM_NOTIFICATION, "Recording Notification Summarize Action")
         }
         val summarizePendingIntent = PendingIntent.getActivity(this, 1, summarizeIntent, pendingIntentFlags)
 
@@ -116,12 +122,26 @@ class SpeechRecognitionService : Service() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            // For Foreground Service
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID,
                 "Speech Recognition Service Channel",
                 NotificationManager.IMPORTANCE_DEFAULT
             )
-            getSystemService(NotificationManager::class.java)?.createNotificationChannel(serviceChannel)
+            notificationManager?.createNotificationChannel(serviceChannel)
+
+            // For Keyword Detection Alerts
+            val keywordChannel = NotificationChannel(
+                KEYWORD_CHANNEL_ID,
+                "キーワード検出通知",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "キーワード検出時に表示される通知です。"
+                enableVibration(true)
+                vibrationPattern = longArrayOf(0, 500, 200, 500)
+            }
+            notificationManager?.createNotificationChannel(keywordChannel)
         }
     }
 
@@ -220,9 +240,41 @@ class SpeechRecognitionService : Service() {
         val normalizedText = text.replace("[？、。 ]".toRegex(), "")
         if (normalizedText.contains("えなんつった")) {
             Log.d(TAG, "★★ Keyword Detected! ★★: $text")
+            // ブロードキャストでUI更新
             sendBroadcast(Intent(BROADCAST_ACTION_KEYWORD).apply {
                 putExtra(EXTRA_KEYWORD_TEXT, text)
             })
+
+            // ヘッドアップ通知を表示して、タップで要約を開始させる
+            showKeywordDetectedNotification()
         }
+    }
+
+    private fun showKeywordDetectedNotification() {
+        val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+
+        val summarizeIntent = Intent(this, MainActivity::class.java).apply {
+            action = ACTION_SUMMARIZE
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra(EXTRA_FROM_NOTIFICATION, "Keyword Notification Tap")
+        }
+        val summarizePendingIntent = PendingIntent.getActivity(this, 2, summarizeIntent, pendingIntentFlags) // Use a different request code
+
+        val notification = NotificationCompat.Builder(this, KEYWORD_CHANNEL_ID)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle("キーワードを検出しました")
+            .setContentText("タップして要約を開始します。")
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .setContentIntent(summarizePendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(KEYWORD_NOTIFICATION_ID, notification)
     }
 }

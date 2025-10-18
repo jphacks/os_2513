@@ -125,6 +125,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleIntent(intent: Intent?) {
+        intent?.getStringExtra(SpeechRecognitionService.EXTRA_FROM_NOTIFICATION)?.let {
+            Log.d("MainActivity", "Launched from: $it")
+        }
+
         if (intent?.action == SpeechRecognitionService.ACTION_SUMMARIZE) {
             actionButton.post { actionButton.performClick() }
         }
