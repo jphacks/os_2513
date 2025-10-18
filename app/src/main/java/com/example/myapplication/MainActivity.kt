@@ -39,11 +39,12 @@ class MainActivity : AppCompatActivity() {
     private var isListening = false
 
     private var getstr: String = ""
+    private var input_text: String =""
 
     // 過去5件の会話履歴を保持するリスト
     private val conversationHistory: MutableList<String> = mutableListOf()
     // 保持する最大件数
-    private val MAX_HISTORY_SIZE = 10
+    private val MAX_HISTORY_SIZE = 5
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,8 +74,8 @@ class MainActivity : AppCompatActivity() {
             }
             // --- End of DEBUG ---
 
-            val prompt = inputText.text.toString()
-            if (prompt.isBlank()) {
+            input_text = inputText.text.toString()
+            if (input_text.isBlank()) {
                 responseText.text = "Please enter text."
                 return@setOnClickListener
             }
@@ -85,6 +86,7 @@ class MainActivity : AppCompatActivity() {
             )
 
             responseText.text = "Generating..." // Provide feedback to the user
+            val prompt = "以下の文章はスマホを見ている人が聞き逃した会話の一部です。文章全体を日本語で簡潔に要約してください。また、要約文に対応すべき依頼や他者から行動をとがめられていると判断できる文章がが含まれている場合は、[要対応][警告]などと太字で示し、行動を促す簡潔な文章を、優先度と共に示し、優先度が高い順に並べてください。\n例) [要対応] ポストに入っている新聞の回収\n優先度：★★\n[警告] 今すぐスマホを片付け、夕飯の準備を手伝うこと\n優先度：★★\n$input_text"
 
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
@@ -100,7 +102,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
         // 音声テキスト変換関連ここから
         textViewResult = findViewById<TextView?>(R.id.textViewResult)
         textViewResult!!.setText("「え？なんつった？」を待機中...")
@@ -256,6 +257,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onResults(results: Bundle) {
+            val inputText = findViewById<EditText>(R.id.inputText)
+
             Log.d(TAG, "onResults (最終結果)")
             val data = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (data != null && !data.isEmpty()) {
@@ -270,8 +273,10 @@ class MainActivity : AppCompatActivity() {
                 //    改行コード("\n")で連結して、1個の文字列に変換する
                 val historyText = conversationHistory.joinToString("\n")
                 // 2. 変換した文字列を TextView にセットする
-                // ※textViewLog も onCreate で findViewById するのを忘れんといてや！
+
+                // 仮として、textViewLogとinputTextの両方に表示
                 textViewLog!!.setText(historyText)
+                inputText.setText(historyText)
 
                 checkForKeyword(fullText)
             }
@@ -360,5 +365,4 @@ class MainActivity : AppCompatActivity() {
         // ★検出したいキーワード
         private const val TARGET_KEYWORD = "え？なんつった？"
     }
-
 }
