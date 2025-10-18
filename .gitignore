@@ -1,0 +1,26 @@
+# Android Studio specific files
+*.iml
+.gradle
+.idea/caches
+.idea/libraries
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
+# Build folder
+/build
+
+# Mac specific files
+.DS_Store
+
+# Captures folder for screenshots
+/captures
+
+# Folders for external native builds
+.externalNativeBuild
+.cxx
+
+# Local properties file (contains SDK path and other user-specific information)
+# Also used for storing sensitive data like API keys. DO NOT COMMIT.
+local.properties
