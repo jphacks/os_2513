@@ -28,7 +28,9 @@ AIが直前の会話の要約を画面上に表示し、あなたのピンチを
 #### 2. ピンチワードを検出して即座に要約を表示
 「なんつった？」とアプリにピンチをささやいてください。
 通知が表示され、クリックするとまもなく要約が生成されます。
-![Screenshot_2025-10-19-14-48-22-44](https://github.com/user-attachments/assets/7ed1d7c8-500e-490f-8504-21dd67974ff6)
+![Screenshot_2025-10-19-14-48-22-44]
+
+<img src="https://github.com/user-attachments/assets/7ed1d7c8-500e-490f-8504-21dd67974ff6" width="300" alt="sample image">
 
 #### 3. 会話の文脈＆対応すべき事項を簡潔に表示
 ピンチのときに必要な「どんな話題を話しかけられたのか」「何をしなければならないのか」を簡潔に表示します。
@@ -65,7 +67,10 @@ AIが判断した優先度も表示されるため、タスクの緊迫感も一
 1. バックグラウンドでの実行
 
  録音処理の再帰呼び出しとバックグラウンド実行のロジックにより、アプリ画面を閉じても音声を録音し続けます。 周囲の会話を気にかけながらも自由にスマホを操作することが可能です。
- ![Screenshot_2025-10-19-14-47-59-33](https://github.com/user-attachments/assets/4352e60e-a2a9-4810-8abc-e251680baef0) 
+ 
+ <img src="https://github.com/user-attachments/assets/4352e60e-a2a9-4810-8abc-e251680baef0" width="300" alt="sample image">
+
+ 
 2. キーワード検出における簡易的な正規化
 
    トリガーとなるキーワードを確実に検出できるよう、空白や句読点の有無などの誤差の影響を排除するシステムを作成しています。
@@ -76,6 +81,7 @@ AIが判断した優先度も表示されるため、タスクの緊迫感も一
 
    このアプリが利用される状況をプロンプト上に詳細に記載することで、単なる会話の要約にとどまらず、このアプリの想定ユーザーに取って有用な情報のみを要約、提示することが可能です。
    https://github.com/jphacks/os_2513/blob/master/app/src/main/java/com/example/myapplication/MainActivity.kt
+
 
 
 
