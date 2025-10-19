@@ -24,8 +24,7 @@ class SpeechRecognitionService : Service() {
     private var speechRecognizerIntent: Intent? = null
     private var isListening = false
 
-    private val conversationHistory: MutableList<String> = mutableListOf()
-    private val MAX_HISTORY_SIZE = 5
+
 
     companion object {
         private const val TAG = "SpeechRecognitionSvc"
@@ -43,6 +42,10 @@ class SpeechRecognitionService : Service() {
         const val EXTRA_FROM_NOTIFICATION = "EXTRA_FROM_NOTIFICATION"
         var isRunning = false
         var latestHistory: String? = null
+
+        // 以下はMainと共用
+        public val conversationHistory: MutableList<String> = mutableListOf()
+        private val MAX_HISTORY_SIZE = 8
     }
 
     override fun onCreate() {
@@ -238,7 +241,7 @@ class SpeechRecognitionService : Service() {
 
     private fun checkForKeyword(text: String) {
         val normalizedText = text.replace("[？、。 ]".toRegex(), "")
-        if (normalizedText.contains("えなんつった")) {
+        if (normalizedText.contains("なんつった")) {
             Log.d(TAG, "★★ Keyword Detected! ★★: $text")
             // ブロードキャストでUI更新
             sendBroadcast(Intent(BROADCAST_ACTION_KEYWORD).apply {
