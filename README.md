@@ -28,7 +28,6 @@ AIが直前の会話の要約を画面上に表示し、あなたのピンチを
 #### 2. ピンチワードを検出して即座に要約を表示
 「なんつった？」とアプリにピンチをささやいてください。
 通知が表示され、クリックするとまもなく要約が生成されます。
-![Screenshot_2025-10-19-14-48-22-44]
 
 <img src="https://github.com/user-attachments/assets/7ed1d7c8-500e-490f-8504-21dd67974ff6" width="300" alt="sample image">
 
@@ -81,6 +80,7 @@ AIが判断した優先度も表示されるため、タスクの緊迫感も一
 
    このアプリが利用される状況をプロンプト上に詳細に記載することで、単なる会話の要約にとどまらず、このアプリの想定ユーザーに取って有用な情報のみを要約、提示することが可能です。
    https://github.com/jphacks/os_2513/blob/master/app/src/main/java/com/example/myapplication/MainActivity.kt
+
 
 
 
