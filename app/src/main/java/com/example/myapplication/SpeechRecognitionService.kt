@@ -115,11 +115,10 @@ class SpeechRecognitionService : Service() {
         val summarizePendingIntent = PendingIntent.getActivity(this, 1, summarizeIntent, pendingIntentFlags)
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("音声認識サービス")
-            .setContentText("録音中")
+            .setContentTitle("録音中")
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentIntent(notificationTapPendingIntent)
-            .addAction(R.drawable.ic_launcher_foreground, "要約", summarizePendingIntent)
+            .addAction(R.drawable.ic_launcher_foreground, "要約する", summarizePendingIntent)
             .build()
     }
 
