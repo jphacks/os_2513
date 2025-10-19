@@ -4,7 +4,8 @@
 
 ## 製品概要
 聞き逃し×Tech：他のことに気を取られて聞き逃してしまった「人の話」を要約して表示してくれるアプリ
-<img src="https://github.com/user-attachments/assets/bc9b70c3-161a-4896-882a-deebf7aee4c2" width="200" alt="sample image">
+
+<img src="https://github.com/user-attachments/assets/bc9b70c3-161a-4896-882a-deebf7aee4c2" width="300" alt="sample image">
 
 ### 背景(製品開発のきっかけ、課題等）
 みなさん、このような経験はありませんか？「まずい、今の人の話聞いていなかった。」と。
@@ -75,6 +76,7 @@ AIが判断した優先度も表示されるため、タスクの緊迫感も一
 
    このアプリが利用される状況をプロンプト上に詳細に記載することで、単なる会話の要約にとどまらず、このアプリの想定ユーザーに取って有用な情報のみを要約、提示することが可能です。
    https://github.com/jphacks/os_2513/blob/master/app/src/main/java/com/example/myapplication/MainActivity.kt
+
 
 
 
