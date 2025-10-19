@@ -72,9 +72,3 @@ AIが判断した優先度も表示されるため、タスクの緊迫感も一
 
    このアプリが利用される状況をプロンプト上に詳細に記載することで、単なる会話の要約にとどまらず、このアプリの想定ユーザーに取って有用な情報のみを要約、提示することが可能です。
    https://github.com/jphacks/os_2513/blob/master/app/src/main/java/com/example/myapplication/MainActivity.kt
-
-
-* 独自で開発したものの内容をこちらに記載してください
-* 特に力を入れた部分をファイルリンク、またはcommit_idを記載してください。
-
-
