@@ -1,6 +1,6 @@
 # えっ なんつった？
+<img width="2934" height="1638" alt="image" src="https://github.com/user-attachments/assets/a1ac11f5-3364-4182-9110-ddd3dac46b05" />
 
-[![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2025/05/JPHACKS2025_ogp.jpg)](https://www.youtube.com/watch?v=lA9EluZugD8)
 
 ## 製品概要
 聞き逃し×Tech：他のことに気を取られて聞き逃してしまった「人の話」を要約して表示してくれるアプリ
@@ -76,3 +76,4 @@ AIが判断した優先度も表示されるため、タスクの緊迫感も一
 
 * 独自で開発したものの内容をこちらに記載してください
 * 特に力を入れた部分をファイルリンク、またはcommit_idを記載してください。
+
