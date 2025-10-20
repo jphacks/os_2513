@@ -1,6 +1,8 @@
 # えっ？なんつった？
 <img width="2934" height="1638" alt="image" src="https://github.com/user-attachments/assets/a1ac11f5-3364-4182-9110-ddd3dac46b05" />
 
+## デモ動画
+https://youtu.be/kxA8smDgor8
 
 ## 製品概要
 聞き逃し×Tech：他のことに気を取られて聞き逃してしまった「人の話」を要約して表示してくれるアプリ
