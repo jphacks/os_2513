@@ -52,6 +52,9 @@ AIが判断した優先度も表示されるため、タスクの緊迫感も一
 
 ## 開発技術
 
+<img width="894" height="807" alt="image" src="https://github.com/user-attachments/assets/d5fe580f-4892-4cbc-873f-ff0b1ab04d2f" />
+
+
 ### 活用した技術
 #### API・データ
 * Google Gemini API　会話文の要約
@@ -82,6 +85,7 @@ AIが判断した優先度も表示されるため、タスクの緊迫感も一
 
    このアプリが利用される状況をプロンプト上に詳細に記載することで、単なる会話の要約にとどまらず、このアプリの想定ユーザーに取って有用な情報のみを要約、提示することが可能です。
    https://github.com/jphacks/os_2513/blob/main/app/src/main/java/com/example/myapplication/MainActivity.kt
+
 
 
 
